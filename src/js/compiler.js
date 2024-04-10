@@ -180,6 +180,7 @@ function generateExtraMembers(state) {
                   o.spritematrix[i] = zeros;
               }
           } else {
+              if (typeof(o.spritematrix[0]) === "string") {
               if ( o.spritematrix.length!==state.sprite_size) {
                   logWarning("Sprite graphics must be " + state.sprite_size + " wide and " + state.sprite_size + " high exactly.",o.lineNumber);
               } else {
@@ -191,6 +192,7 @@ function generateExtraMembers(state) {
                   }
               }
               o.spritematrix = generateSpriteMatrix(o.spritematrix);
+              }
           }
         }
     }

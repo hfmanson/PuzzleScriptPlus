@@ -647,6 +647,12 @@ var codeMirrorFn = function() {
                             }
                         case 3:
                             {
+                                if (stream.peek() === '[') {
+                                    state.objects[state.objects_candname].spritematrix = JSON.parse(stream.string);
+                                    stream.skipToEnd();
+                                    state.objects_section = 0;
+                                    return 'JSON';
+                                }
                                 var ch = stream.eat(/[.\d]/);
                                 var spritematrix = state.objects_spritematrix;
                                 if (ch === undefined) {

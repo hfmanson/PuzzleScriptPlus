@@ -21,26 +21,41 @@ function renderSprite(spritectx, spritegrid, colors, padding, x, y) {
 
     spritectx.clearRect(offsetX, offsetY, cellwidth, cellheight);
 
-	var w = spritegrid[0].length;
-	var h = spritegrid.length;
-	var cw = ~~(cellwidth / (w + (padding|0)));
-    var ch = ~~(cellheight / (h + (padding|0)));
-    var pixh=ch;
-    if ("scanline" in state.metadata) {
-        pixh=Math.ceil(ch/2);
-    }
-    spritectx.fillStyle = state.fgcolor;
-    for (var j = 0; j < h; j++) {
-        for (var k = 0; k < w; k++) {
-            var val = spritegrid[j][k];
-            if (val >= 0) {
-                var cy = (j * ch)|0;
-                var cx = (k * cw)|0;
-                spritectx.fillStyle = colors[val];
-                spritectx.fillRect(offsetX + cx, offsetY + cy, cw, pixh);
-            }
-        }
-    }
+	if (Array.isArray(spritegrid[0]))
+	{
+		var w = spritegrid[0].length;
+		var h = spritegrid.length;
+		var cw = ~~(cellwidth / (w + (padding|0)));
+		var ch = ~~(cellheight / (h + (padding|0)));
+		var pixh=ch;
+		if ("scanline" in state.metadata) {
+			pixh=Math.ceil(ch/2);
+		}
+		spritectx.fillStyle = state.fgcolor;
+		for (var j = 0; j < h; j++) {
+			for (var k = 0; k < w; k++) {
+				var val = spritegrid[j][k];
+				if (val >= 0) {
+					var cy = (j * ch)|0;
+					var cx = (k * cw)|0;
+					spritectx.fillStyle = colors[val];
+					spritectx.fillRect(offsetX + cx, offsetY + cy, cw, pixh);
+				}
+			}
+		}
+	} else {
+		const old = spritectx.getTransform();
+		spritectx.translate(offsetX, offsetY);
+		spritectx.scale(cellwidth, cellheight);
+		for (const instr of spritegrid) {
+			if (instr.prop) {
+				spritectx[instr.prop] = instr.val;
+			} else if (instr.fn) {
+				spritectx[instr.fn].apply(spritectx, instr.args);
+			}
+		}
+		spritectx.setTransform(old);
+	}
 }
 
 function drawTextWithCustomFont(txt, ctx, x, y) {

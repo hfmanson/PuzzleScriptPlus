@@ -22,7 +22,13 @@ const cssmin = require('ycssmin').cssmin;
 const { minify } = require("terser");
 const { Compress } = require('gzipper');            
 const htmlminify = require('html-minifier-terser').minify;
-const glob = require("glob")
+const {
+  glob,
+  globSync,
+  globStream,
+  globStreamSync,
+  Glob,
+} = require('glob');
 
 var lines = fs.readFileSync(".build/buildnumber.txt",encoding='utf-8');
 var buildnum = parseInt(lines);
@@ -44,9 +50,9 @@ var start = new Date()
 console.log("removing bin")
 
 
-fs.rmdirSync("./bin", { recursive: true });
+fs.rmdirSync("bin", { recursive: true });
 
-fs.mkdirSync('./bin');
+fs.mkdirSync('bin');
 
 console.log("inlining standalone template")
 
